@@ -1,0 +1,246 @@
+# num_states num_finalize_states
+79 42
+
+# finalize_states: idx_state token_id
+
+# keywords, bool literals, basic types, identifier
+8 ID
+32 IF
+34 BASIC_TYPE
+37 ELSE
+41 WHILE
+42 DO
+46 BREAK
+49 BASIC_TYPE
+53 BASIC_TYPE
+57 BOOL_LITERAL
+
+# blank
+7 BLANK
+
+# comment
+9 OP_ARITHMETIC
+60 COMMENT
+
+# integer literals
+10 DECIMAL_LITERAL
+11 OCTAL_LITERAL
+65 HEX_LITERAL
+
+# floating literals
+63 FLOATING_LITERAL
+66 FLOATING_LITERAL
+69 FLOATING_LITERAL
+
+# character literal, string literal
+71 CHARACTER_LITERAL
+72 STRING_LITERAL
+
+# operators
+15 OPEN_PARATHENSIS
+16 CLOSE_PARATHENSIS
+17 OPEN_BRACKET
+18 CLOSE_BRACKET
+19 OPEN_BRACE
+20 CLOSE_BRACE
+21 SEMICOLON
+22 PLUS
+23 MINUS
+24 OP_LOGICAL_OR_BITWISE_NOT
+25 OP_ARITHMETIC
+26 OP_LOGICAL_COMPARASION
+73 OP_LOGICAL_COMPARASION
+27 OP_LOGICAL_OR_BITWISE_NOT
+28 OP_ASSIGNMENT
+74 OP_LOGICAL_EQUALITY
+29 OP_BITWISE_AND
+75 OP_LOGICAL_AND
+30 OP_BITWISE_OR
+76 OP_LOGICAL_OR
+31 OP_BITWISE_XOR 
+
+# transitions: id_state_in id_state_out parameter
+
+# IF
+0 1 i
+1 32 f
+# ELSE
+0 2 e
+2 35 l
+35 36 s
+36 37 e
+# WHILE
+0 3 w
+3 38 h
+38 39 i
+39 40 l
+40 41 e
+# DO
+0 4 d
+4 42 o
+# BREAK
+0 5 b
+5 43 r
+43 44 e
+44 45 a
+45 46 k
+
+# BASIC_TYPE
+1 33 n
+33 34 t
+5 47 o
+47 48 o
+48 49 l
+0 6 f
+6 50 l
+50 51 o
+51 52 a
+52 53 t
+
+# BOOL_LITERAL
+6 54 a
+54 55 l
+55 56 s
+56 57 e
+0 77 t
+77 78 r
+78 56 u
+
+# IF -> ID
+1 8 [_a-eg-zA-Z0-9]   # f
+# ELSE -> ID
+2 8 [_a-km-zA-Z0-9]   # l
+35 8 [_a-rt-zA-Z0-9]  # s
+36 8 [_a-df-zA-Z0-9]  # e
+# WHILE -> ID
+3 8 [_a-gi-zA-Z0-9]   # h
+38 8 [_a-hj-zA-Z0-9]  # i
+39 8 [_a-km-zA-Z0-9]  # l
+40 8 [_a-df-zA-Z0-9]  # e
+# DO -> ID
+4 8 [_a-np-zA-Z0-9]   # o
+# BREAK -> ID
+5 8 [_a-qs-zA-Z0-9]   # r
+43 8 [_a-df-zA-Z0-9]  # e
+44 8 [_b-zA-Z0-9]     # a
+45 8 [_a-jl-zA-Z0-9]  # k
+
+# BASIC_TYPE -> ID
+1 8 [_a-mo-zA-Z0-9]   # n
+33 8 [_a-su-zA-Z0-9]  # t
+5 8 [_a-np-zA-Z0-9]   # o
+47 8 [_a-np-zA-Z0-9]  # o
+48 8 [_a-km-zA-Z0-9]  # l
+6 8 [_a-km-zA-Z0-9]   # l
+50 8 [_a-np-zA-Z0-9]  # o
+51 8 [_b-zA-Z0-9]     # a
+52 8 [_a-su-zA-Z0-9]  # t
+
+# BOOL_LITERAL -> ID
+6 8 [_b-zA-Z0-9]      # a
+54 8 [_a-km-zA-Z0-9]  # l
+55 8 [_a-rt-zA-Z0-9]  # s
+56 8 [_a-df-zA-Z0-9]  # e
+77 8 [_a-qs-zA-Z0-9]  # r
+78 8 [_a-tv-zA-Z0-9]  # u
+
+# ID
+0 8 [_acghj-suvx-zA-Z]  # bdefitw
+8 8 [_a-zA-Z0-9]
+
+# BLANK
+0 7 [\b\t\n]
+7 7 [\b\t\n]
+
+# COMMENT
+9 58 *
+58 59 *
+59 58 [^/]
+59 60 /
+9 61 /
+61 61 [^\n]
+61 60 \n
+
+# DECIMAL_LITERAL
+0 10 [1-9]
+10 10 [0-9]
+# OCTAL_LITERAL
+0 11 0
+11 11 [0-7]
+# HEX_LITERAL
+11 64 [xX]
+64 65 [0-9a-fA-F]
+65 65 [0-9a-fA-F]
+
+# FLOATING_LITERAL
+0 12 .
+12 63 [0-9]
+63 63 [0-9]
+0 66 .
+11 62 [89]
+62 62 [0-9]
+62 66 .
+66 66 [0-9]
+10 67 [eE]
+11 67 [eE]
+62 67 [eE]
+66 67 [eE]
+63 67 [eE]
+67 68 [+-]
+68 69 [0-9]
+67 69 [0-9]
+69 69 [0-9]
+
+# CHARACTER_LITERAL
+0 13 '
+13 70 [0-9a-zA-Z]
+70 71 '
+
+# STRING_LITERAL
+0 14 "
+14 14 [0-9a-zA-Z]
+14 72 "
+
+# OPEN_PARATHENSIS
+0 15 (
+# CLOSE_PARATHENSIS
+0 16 )
+# OPEN_BRACKET
+0 17 \[
+# CLOSE_BRACKET
+0 18 \]
+# OPEN_BRACE
+0 19 {
+# CLOSE_BRACE
+0 20 }
+# SEMICOLON
+0 21 ;
+# PLUS
+0 22 +
+# MINUS
+0 23 -
+
+# OP_LOGICAL_OR_BITWISE_NOT
+0 24 ~
+0 27 !
+# OP_ARITHMETIC
+0 25 [*%]
+0 9 /
+# OP_LOGICAL_COMPARASION
+0 26 [<>]
+26 73 =
+# OP_LOGICAL_EQUALITY
+27 74 =
+38 74 =
+# OP_BITWISE_AND
+0 29 &
+# OP_BITWISE_XOR
+0 31 ^
+# OP_BITWISE_OR
+0 30 |
+# OP_LOGICAL_AND
+29 75 &
+# OP_LOGICAL_OR
+30 76 |
+# OP_ASSIGNMENT
+0 28 =
