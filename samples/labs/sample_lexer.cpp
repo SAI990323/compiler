@@ -288,7 +288,7 @@ int main(int argc, char *argv[]) {
     
   }
 
-  scan(dfa, "if (x==1) x = x + 1;\n");
+  scan(dfa, "if (x==1) x = x + 1.5e-100;\n");
 
   return 0;
 }
