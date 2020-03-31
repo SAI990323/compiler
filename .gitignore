@@ -1,6 +1,10 @@
 # build folder
+.vscode/
 build/
 samples/sample*
+samples/main*
+samples/output/
+
 
 # Prerequisites
 *.d
