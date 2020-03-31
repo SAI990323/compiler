@@ -1,4 +1,5 @@
 # build folder
+.idea/
 .vscode/
 build/
 samples/sample*
