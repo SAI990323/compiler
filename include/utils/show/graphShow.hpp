@@ -30,22 +30,40 @@ public:
             std::string token_id;
             in >> idx_state >> token_id;
             std::cout << idx_state << " " << token_id << "\n";
-            finalizePoints[idx_state] = token_id + "_" + std::to_string(idx_state);
+            finalizePoints[idx_state] = token_id;
         }
 
         for (int i = 0; i < num_states; i++) {
             if (finalizePoints.count(i)) {
-                points[i] = finalizePoints[i];
+                points[i] = finalizePoints[i] + "_" + std::to_string(i);
             } else {
                 points[i] = "node_" + std::to_string(i);
             }
+            if (i > 0)
+                belong[i] = i;
         }
+
+        for (int i = 1; i < num_states; i++) {
+            if (finalizePoints.count(i)) {
+                for (int j = i + 1; j < num_states; j++) {
+                    if (finalizePoints.count(j)) {
+                            if (finalizePoints[i].compare(finalizePoints[j]) == 0) {
+                                belong[j] = belong[i];
+                                std :: cout << finalizePoints[i] << " " << i << " " <<  finalizePoints[j] << " " << j << "\n";
+                            }
+                        }
+                }
+                finalizePoints[i] = finalizePoints[i] + "_" + std::to_string(i);
+            }
+            
+        }
+
         {
             std::size_t idx_state_in, idx_state_out;
             std::string parameter;
             while (in >> idx_state_in >> idx_state_out >> parameter) {
                 if (find(idx_state_in) != find(idx_state_out) && (idx_state_in != 0 && idx_state_out != 0)) {
-                    belong[std::max(idx_state_in, idx_state_out)] = find(std::min(idx_state_in, idx_state_out));
+                    belong[find(std::max(idx_state_in, idx_state_out))] = find(std::min(idx_state_in, idx_state_out));
                 }
                 edges[std::make_pair(idx_state_in, idx_state_out)] = parameter;
                 link_edge[idx_state_in].emplace_back(std::make_pair(idx_state_out, parameter));
@@ -56,7 +74,7 @@ public:
         }
     }
 
-    void paint(int idx) {
+    void paint(int idx, int block) {
         std::ofstream out_stream;
 
         out_stream.open("../samples/output/output_" + std::to_string(idx) + ".dot");
@@ -64,23 +82,25 @@ public:
         out_stream << "digraph g {\n";
         out_stream << "\tnode [shape = doublecircle];\n";
         for (auto point : finalizePoints) {
-            if (belong[point.first] == idx) {
+            if (belong[point.first] == block) {
                 out_stream << "\t" << point.second << ";\n";
             }
         }
         out_stream << "\tnode [shape = circle];\n";
         for (auto edge : edges) {
-            if (belong[edge.first.first] != idx || belong[edge.first.second] != idx) {
+            if (belong[edge.first.first] != block || belong[edge.first.second] != block) {
                 continue;
             }
-            std::string::size_type found = edge.second.find("\"");
-            if (found == std::string::npos) {
-                out_stream << "\t" << points[edge.first.first] << " -> " << points[edge.first.second] << " [label = \""
-                           << edge.second + "\"]\n";
-            } else {
-                out_stream << "\t" << points[edge.first.first] << " -> " << points[edge.first.second] << " [label = \""
-                           << "\\" << edge.second + "\"]\n";
+            out_stream << "\t" << points[edge.first.first] << " -> " << points[edge.first.second] << " [label = \"";
+            int len = edge.second.length();
+            for (int idx = 0; idx < len; idx++) {
+                if (edge.second[idx] == '\\' || edge.second[idx] == '"') {
+                    out_stream << '\\' << edge.second[idx];
+                } else {
+                    out_stream << edge.second[idx];
+                }
             }
+            out_stream << "\", fontsize = 16]\n";
         }
         out_stream << "}\n";
     }
@@ -89,9 +109,9 @@ public:
         for (int idx = 1; idx < total_points; idx++) {
             if (belong[idx] == idx) {
                 belong[0] = idx;
-                paint(idx);
-                std::string command = "dot -Tpng ../samples/output/output_" + std::to_string(idx) + ".dot -o ../samples/output/output_" +
-                                      std::to_string(idx) + ".png";
+                paint(++graph_cnt, idx);
+                std::string command = "dot -Tpng ../samples/output/output_" + std::to_string(graph_cnt) + ".dot -o ../samples/output/output_" +
+                                      std::to_string(graph_cnt) + ".png";
                 system(command.c_str());
             }
         }
@@ -184,14 +204,16 @@ public:
         }
         out_stream << "\tnode [shape = circle];\n";
         for (auto edge : dfa_edges) {
-            std::string::size_type found = edge.second.find("\"");
-            if (found == std::string::npos) {
-                out_stream << "\t" << dfaPoints[edge.first.first] << " -> " << dfaPoints[edge.first.second] << " [label = \""
-                           << edge.second + "\"]\n";
-            } else {
-                out_stream << "\t" << dfaPoints[edge.first.first] << " -> " << dfaPoints[edge.first.second] << " [label = \""
-                           << "\\" << edge.second + "\"]\n";
+            out_stream << "\t" << dfaPoints[edge.first.first] << " -> " << dfaPoints[edge.first.second] << " [label = \"";
+            int len = edge.second.length();
+            for (int idx = 0; idx < len; idx++) {
+                if (edge.second[idx] == '/' || edge.second[idx] == '"') {
+                    out_stream << "/" << edge.second[idx];
+                } else {
+                    out_stream << edge.second[idx];
+                }
             }
+            out_stream << "\", fontsize = 8]\n";
         }
         out_stream << "}\n";
         out_stream.close();
@@ -210,6 +232,7 @@ private:
     std::set<std::string> symbols;
     int total_points;
     int cnt;
+    int graph_cnt = 0;
 
     int find(int x) { return belong[x] == x ? x : belong[x] = find(belong[x]); }
 };
