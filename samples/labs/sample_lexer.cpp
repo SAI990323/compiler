@@ -189,18 +189,13 @@ public:
   void output_as_csv(std::ofstream& out_stream) {
     for (auto& state: states()) {
       out_stream << state->idx << "_" << state->token_id << ", ";
-      std::bitset<256> character_set = 0;
       for (auto& transition: available_transitions(state)) {
-        character_set |= transition->character_set;
-      }
-      std::string acceptable_characters;
-      for (int ch = 0; ch <= 256; ++ch) {
-        if (character_set[ch] && isprint(ch)) {
-          acceptable_characters.push_back(ch);
+        std::bitset<256> character_set = transition->character_set;
+        for (int ch = 0; ch <= 256; ++ch) {
+          if (character_set[ch] && isprint(ch)) {
+            out_stream << (char) ch << " -> " << transition->target->idx << "_" << transition->target->token_id << ", ";
+          }
         }
-      }
-      for (auto ch: acceptable_characters) {
-        out_stream << ch << ", ";
       }
       out_stream << "\n";
     }
