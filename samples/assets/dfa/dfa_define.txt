@@ -1,9 +1,36 @@
 # num_states num_finalize_states
-79 42
+79 69
 
 # finalize_states: idx_state token_id
 
 # keywords, bool literals, basic types, identifier
+1 ID
+2 ID
+3 ID
+4 ID
+5 ID
+6 ID
+7 ID
+77 ID
+33 ID
+35 ID
+36 ID
+38 ID
+39 ID
+49 ID 
+43 ID 
+44 ID 
+45 ID 
+47 ID 
+48 ID 
+50 ID 
+51 ID 
+52 ID 
+54 ID 
+55 ID 
+56 ID 
+77 ID
+78 ID
 8 ID
 32 IF
 34 BASIC_TYPE
@@ -18,7 +45,7 @@
 # blank
 7 BLANK
 
-# comment
+# commentID
 9 OP_ARITHMETIC
 60 COMMENT
 
