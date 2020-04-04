@@ -29,16 +29,35 @@ public:
             std::size_t idx_state;
             std::string token_id;
             in >> idx_state >> token_id;
-            finalizePoints[idx_state] = token_id + "_" + std::to_string(idx_state);
+            std::cout << idx_state << " " << token_id << "\n";
+            finalizePoints[idx_state] = token_id;
         }
 
         for (int i = 0; i < num_states; i++) {
             if (finalizePoints.count(i)) {
-                points[i] = finalizePoints[i];
+                points[i] = finalizePoints[i] + "_" + std::to_string(i);
             } else {
                 points[i] = "node_" + std::to_string(i);
             }
+            if (i > 0)
+                belong[i] = i;
         }
+
+        for (int i = 1; i < num_states; i++) {
+            if (finalizePoints.count(i)) {
+                for (int j = i + 1; j < num_states; j++) {
+                    if (finalizePoints.count(j)) {
+                            if (finalizePoints[i].compare(finalizePoints[j]) == 0) {
+                                belong[j] = belong[i];
+                                std :: cout << finalizePoints[i] << " " << i << " " <<  finalizePoints[j] << " " << j << "\n";
+                            }
+                        }
+                }
+                finalizePoints[i] = finalizePoints[i] + "_" + std::to_string(i);
+            }
+            
+        }
+
         {
             std::size_t idx_state_in, idx_state_out;
             std::string parameter;
@@ -73,13 +92,15 @@ public:
                 continue;
             }
             out_stream << "\t" << points[edge.first.first] << " -> " << points[edge.first.second] << " [label = \"";
-            for (auto p : edge.second)
-            {
-                if(p == '\"') out_stream << "\\\"";
-                else if (p == '\\') out_stream << "\\\\";
-                else out_stream << p;
+            int len = edge.second.length();
+            for (int idx = 0; idx < len; idx++) {
+                if (edge.second[idx] == '\\' || edge.second[idx] == '"') {
+                    out_stream << '\\' << edge.second[idx];
+                } else {
+                    out_stream << edge.second[idx];
+                }
             }
-            out_stream <<  "\"]\n";
+            out_stream << "\", fontsize = 16]\n";
         }
         out_stream << "}\n";
     }
@@ -183,17 +204,16 @@ public:
         }
         out_stream << "\tnode [shape = circle];\n";
         for (auto edge : dfa_edges) {
-            out_stream << "\t" << points[edge.first.first] << " -> " << points[edge.first.second] << " [label = \"";
-            for (auto p : edge.second)
-            {
-                if (p == '\"')
-                    putchar('\"');
-                else if (p == '\\')
-                    putchar('\\');
-                else
-                    putchar(p);
+            out_stream << "\t" << dfaPoints[edge.first.first] << " -> " << dfaPoints[edge.first.second] << " [label = \"";
+            int len = edge.second.length();
+            for (int idx = 0; idx < len; idx++) {
+                if (edge.second[idx] == '/' || edge.second[idx] == '"') {
+                    out_stream << "/" << edge.second[idx];
+                } else {
+                    out_stream << edge.second[idx];
+                }
             }
-            out_stream << "\"]\n";
+            out_stream << "\", fontsize = 8]\n";
         }
         out_stream << "}\n";
         out_stream.close();

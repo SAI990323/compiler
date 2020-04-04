@@ -5,6 +5,7 @@ import sys
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+import os
 
 class Client(QWidget):
 
@@ -18,6 +19,7 @@ class Client(QWidget):
     self.btn = QPushButton('Done')
     self.label = QLabel()
     self.text = QTextEdit()
+    self.text2 = QTextEdit()
 
     self.btn.clicked.connect(self.execute)
     self.label.setText("请输入代码:");
@@ -25,15 +27,19 @@ class Client(QWidget):
     layout.addWidget(self.btn)
     layout.addWidget(self.label)
     layout.addWidget(self.text)
+    layout.addWidget(self.text2)
+
 
     self.setLayout(layout)
 
 
   def execute(self):
     execcute_string = self.text.toPlainText()
-    with open('../samples/assets/code/ui_code.txt','w') as f:
+    with open('assets/code/ui_code.txt', 'w') as f:
       f.write(execcute_string)
-    print(execcute_string)
+    result = os.popen("./sample_lexer")
+    res = result.read()
+    self.text2.setText(res)
 
 
 if __name__ == '__main__':
