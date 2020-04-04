@@ -37,10 +37,12 @@ class Client(QWidget):
     execcute_string = self.text.toPlainText()
     with open('assets/code/ui_code.txt', 'w') as f:
       f.write(execcute_string)
-    result = os.popen("./sample_lexer")
-    res = result.read()
-    self.text2.setText(res)
-
+    os.system("./sample_lexer assets/code/ui_code.txt output/output_lexer.txt output/output_lexer.csv")
+    s = ""
+    with open('output/output_lexer.txt', 'r') as f:
+      for line in f:
+        s = s + line
+    self.text2.setText(s)
 
 if __name__ == '__main__':
   app = QApplication(sys.argv)
