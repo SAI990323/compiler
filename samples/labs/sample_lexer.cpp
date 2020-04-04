@@ -318,5 +318,6 @@ int main(int argc, char *argv[]) {
   std::ofstream out_stream(argv[2]);
   scan(dfa, input_content, out_stream);
 
+  
   return 0;
 }
