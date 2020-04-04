@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <memory>
 #include <list>
 #include <vector>
@@ -202,15 +203,15 @@ std::string smart_character_output(char c) {
   }
 }
 
-void smart_token_output(const string& token_id, const string& accepted_string) {
-  cout << "< " << token_id << " , ";
+void smart_token_output(const string& token_id, const string& accepted_string, std::ofstream& out_stream) {
+  out_stream << "< " << token_id << " , ";
   for (auto& ch: accepted_string) {
-    cout << smart_character_output(ch);
+    out_stream << smart_character_output(ch);
   }
-  cout << " >\n";
+  out_stream << " >\n";
 }
 
-void scan(shared_ptr<Automaton> dfa, const std::string &input) {
+void scan(shared_ptr<Automaton> dfa, const std::string &input, std::ofstream& out_stream) {
   size_t i_start = 0, i_offset;
   for ( ; i_start < input.length(); i_start += i_offset) {
     stack<shared_ptr<State>> stack;
@@ -238,12 +239,12 @@ void scan(shared_ptr<Automaton> dfa, const std::string &input) {
       stack.pop();
     }
     if (i_offset == 0) {
-      smart_token_output("INVALID", input.substr(i_start, 1));
+      smart_token_output("INVALID", input.substr(i_start, 1), out_stream);
       i_start += 1;
     } else {
       auto stopped_state = stack.top();
       if (stopped_state->token_id != "BLANK") {
-        smart_token_output(stopped_state->token_id, input.substr(i_start, i_offset));
+        smart_token_output(stopped_state->token_id, input.substr(i_start, i_offset), out_stream);
       }
     }
   }
@@ -284,11 +285,11 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  for (size_t i = 0; i < num_states; ++i) {
-    
-  }
+  std::ifstream in_stream(argv[1]);
+  std::string input_content { std::istreambuf_iterator<char>(in_stream), std::istreambuf_iterator<char>() };
 
-  scan(dfa, "if (x==1) x = x + 1.5e-100;\n");
+  std::ofstream out_stream(argv[2]);
+  scan(dfa, input_content, out_stream);
 
   return 0;
 }
