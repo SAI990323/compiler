@@ -29,7 +29,6 @@ public:
             std::size_t idx_state;
             std::string token_id;
             in >> idx_state >> token_id;
-            std::cout << idx_state << " " << token_id << "\n";
             finalizePoints[idx_state] = token_id + "_" + std::to_string(idx_state);
         }
 
@@ -45,7 +44,7 @@ public:
             std::string parameter;
             while (in >> idx_state_in >> idx_state_out >> parameter) {
                 if (find(idx_state_in) != find(idx_state_out) && (idx_state_in != 0 && idx_state_out != 0)) {
-                    belong[std::max(idx_state_in, idx_state_out)] = find(std::min(idx_state_in, idx_state_out));
+                    belong[find(std::max(idx_state_in, idx_state_out))] = find(std::min(idx_state_in, idx_state_out));
                 }
                 edges[std::make_pair(idx_state_in, idx_state_out)] = parameter;
                 link_edge[idx_state_in].emplace_back(std::make_pair(idx_state_out, parameter));
@@ -56,7 +55,7 @@ public:
         }
     }
 
-    void paint(int idx) {
+    void paint(int idx, int block) {
         std::ofstream out_stream;
 
         out_stream.open("../samples/output/output_" + std::to_string(idx) + ".dot");
@@ -64,23 +63,23 @@ public:
         out_stream << "digraph g {\n";
         out_stream << "\tnode [shape = doublecircle];\n";
         for (auto point : finalizePoints) {
-            if (belong[point.first] == idx) {
+            if (belong[point.first] == block) {
                 out_stream << "\t" << point.second << ";\n";
             }
         }
         out_stream << "\tnode [shape = circle];\n";
         for (auto edge : edges) {
-            if (belong[edge.first.first] != idx || belong[edge.first.second] != idx) {
+            if (belong[edge.first.first] != block || belong[edge.first.second] != block) {
                 continue;
             }
-            std::string::size_type found = edge.second.find("\"");
-            if (found == std::string::npos) {
-                out_stream << "\t" << points[edge.first.first] << " -> " << points[edge.first.second] << " [label = \""
-                           << edge.second + "\"]\n";
-            } else {
-                out_stream << "\t" << points[edge.first.first] << " -> " << points[edge.first.second] << " [label = \""
-                           << "\\" << edge.second + "\"]\n";
+            out_stream << "\t" << points[edge.first.first] << " -> " << points[edge.first.second] << " [label = \"";
+            for (auto p : edge.second)
+            {
+                if(p == '\"') out_stream << "\\\"";
+                else if (p == '\\') out_stream << "\\\\";
+                else out_stream << p;
             }
+            out_stream <<  "\"]\n";
         }
         out_stream << "}\n";
     }
@@ -89,9 +88,9 @@ public:
         for (int idx = 1; idx < total_points; idx++) {
             if (belong[idx] == idx) {
                 belong[0] = idx;
-                paint(idx);
-                std::string command = "dot -Tpng ../samples/output/output_" + std::to_string(idx) + ".dot -o ../samples/output/output_" +
-                                      std::to_string(idx) + ".png";
+                paint(++graph_cnt, idx);
+                std::string command = "dot -Tpng ../samples/output/output_" + std::to_string(graph_cnt) + ".dot -o ../samples/output/output_" +
+                                      std::to_string(graph_cnt) + ".png";
                 system(command.c_str());
             }
         }
@@ -184,14 +183,17 @@ public:
         }
         out_stream << "\tnode [shape = circle];\n";
         for (auto edge : dfa_edges) {
-            std::string::size_type found = edge.second.find("\"");
-            if (found == std::string::npos) {
-                out_stream << "\t" << dfaPoints[edge.first.first] << " -> " << dfaPoints[edge.first.second] << " [label = \""
-                           << edge.second + "\"]\n";
-            } else {
-                out_stream << "\t" << dfaPoints[edge.first.first] << " -> " << dfaPoints[edge.first.second] << " [label = \""
-                           << "\\" << edge.second + "\"]\n";
+            out_stream << "\t" << points[edge.first.first] << " -> " << points[edge.first.second] << " [label = \"";
+            for (auto p : edge.second)
+            {
+                if (p == '\"')
+                    putchar('\"');
+                else if (p == '\\')
+                    putchar('\\');
+                else
+                    putchar(p);
             }
+            out_stream << "\"]\n";
         }
         out_stream << "}\n";
         out_stream.close();
@@ -210,6 +212,7 @@ private:
     std::set<std::string> symbols;
     int total_points;
     int cnt;
+    int graph_cnt = 0;
 
     int find(int x) { return belong[x] == x ? x : belong[x] = find(belong[x]); }
 };
