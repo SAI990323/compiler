@@ -14,11 +14,12 @@ using namespace std;
 
 struct State {
 
+  std::size_t idx;
   bool is_finalize;
   string token_id;
 
-  State(bool is_finalize = false)
-  : is_finalize(is_finalize)
+  State(std::size_t idx, bool is_finalize = false)
+  : idx(idx), is_finalize(is_finalize)
   {}
 
   ~State() {}
@@ -112,20 +113,23 @@ struct Transition {
     return character_set[ch];
   }
 
-  void output_acceptable_characters() {
+  std::string acceptable_characters() {
+    std::string acceptable_characters;
     for (int ch = 0; ch <= 256; ++ch) {
       if (character_set[ch] && isprint(ch)) {
-        std::cout << ch;
+        acceptable_characters.push_back(ch);
       }
     }
+    return acceptable_characters;
   }
+
 };
 
 class Automaton {
 
 public:
   Automaton() {
-    m_start_state = make_shared<State>();
+    m_start_state = make_shared<State>(0);
     m_states.insert(m_start_state);
   }
 
@@ -180,6 +184,26 @@ public:
       transitions.emplace(target);
     }
     return transitions;
+  }
+
+  void output_as_csv(std::ofstream& out_stream) {
+    for (auto& state: states()) {
+      out_stream << state->idx << "_" << state->token_id << ", ";
+      std::bitset<256> character_set = 0;
+      for (auto& transition: available_transitions(state)) {
+        character_set |= transition->character_set;
+      }
+      std::string acceptable_characters;
+      for (int ch = 0; ch <= 256; ++ch) {
+        if (character_set[ch] && isprint(ch)) {
+          acceptable_characters.push_back(ch);
+        }
+      }
+      for (auto ch: acceptable_characters) {
+        out_stream << ch << ", ";
+      }
+      out_stream << "\n";
+    }
   }
 
 private:
@@ -263,7 +287,7 @@ int main(int argc, char *argv[]) {
   vector<shared_ptr<State>> states { dfa->start_state() };
   // bypass start state, which is indexed 0 and created when dfa is constructed
   for (size_t i = 1; i < num_states; ++i) {
-    auto state = make_shared<State>();
+    auto state = make_shared<State>(i);
     states.push_back(state);
     dfa->add_state(state);
   }
@@ -284,6 +308,9 @@ int main(int argc, char *argv[]) {
       dfa->add_transition(states[idx_state_in], states[idx_state_out], parameter);
     }
   }
+
+  std::ofstream dfa_out_stream(argv[3]);
+  dfa->output_as_csv(dfa_out_stream);
 
   std::ifstream in_stream(argv[1]);
   std::string input_content { std::istreambuf_iterator<char>(in_stream), std::istreambuf_iterator<char>() };
