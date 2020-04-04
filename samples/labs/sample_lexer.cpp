@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <memory>
 #include <list>
 #include <vector>
@@ -13,11 +14,12 @@ using namespace std;
 
 struct State {
 
+  std::size_t idx;
   bool is_finalize;
   string token_id;
 
-  State(bool is_finalize = false)
-  : is_finalize(is_finalize)
+  State(std::size_t idx, bool is_finalize = false)
+  : idx(idx), is_finalize(is_finalize)
   {}
 
   ~State() {}
@@ -111,20 +113,23 @@ struct Transition {
     return character_set[ch];
   }
 
-  void output_acceptable_characters() {
+  std::string acceptable_characters() {
+    std::string acceptable_characters;
     for (int ch = 0; ch <= 256; ++ch) {
       if (character_set[ch] && isprint(ch)) {
-        std::cout << ch;
+        acceptable_characters.push_back(ch);
       }
     }
+    return acceptable_characters;
   }
+
 };
 
 class Automaton {
 
 public:
   Automaton() {
-    m_start_state = make_shared<State>();
+    m_start_state = make_shared<State>(0);
     m_states.insert(m_start_state);
   }
 
@@ -181,6 +186,26 @@ public:
     return transitions;
   }
 
+  void output_as_csv(std::ofstream& out_stream) {
+    for (auto& state: states()) {
+      out_stream << state->idx << "_" << state->token_id << ", ";
+      std::bitset<256> character_set = 0;
+      for (auto& transition: available_transitions(state)) {
+        character_set |= transition->character_set;
+      }
+      std::string acceptable_characters;
+      for (int ch = 0; ch <= 256; ++ch) {
+        if (character_set[ch] && isprint(ch)) {
+          acceptable_characters.push_back(ch);
+        }
+      }
+      for (auto ch: acceptable_characters) {
+        out_stream << ch << ", ";
+      }
+      out_stream << "\n";
+    }
+  }
+
 private:
   shared_ptr<State> m_start_state;
   unordered_set<shared_ptr<State>> m_states;
@@ -202,15 +227,15 @@ std::string smart_character_output(char c) {
   }
 }
 
-void smart_token_output(const string& token_id, const string& accepted_string) {
-  cout << "< " << token_id << " , ";
+void smart_token_output(const string& token_id, const string& accepted_string, std::ofstream& out_stream) {
+  out_stream << "< " << token_id << " , ";
   for (auto& ch: accepted_string) {
-    cout << smart_character_output(ch);
+    out_stream << smart_character_output(ch);
   }
-  cout << " >\n";
+  out_stream << " >\n";
 }
 
-void scan(shared_ptr<Automaton> dfa, const std::string &input) {
+void scan(shared_ptr<Automaton> dfa, const std::string &input, std::ofstream& out_stream) {
   size_t i_start = 0, i_offset;
   for ( ; i_start < input.length(); i_start += i_offset) {
     stack<shared_ptr<State>> stack;
@@ -238,12 +263,12 @@ void scan(shared_ptr<Automaton> dfa, const std::string &input) {
       stack.pop();
     }
     if (i_offset == 0) {
-      smart_token_output("INVALID", input.substr(i_start, 1));
+      smart_token_output("INVALID", input.substr(i_start, 1), out_stream);
       i_start += 1;
     } else {
       auto stopped_state = stack.top();
       if (stopped_state->token_id != "BLANK") {
-        smart_token_output(stopped_state->token_id, input.substr(i_start, i_offset));
+        smart_token_output(stopped_state->token_id, input.substr(i_start, i_offset), out_stream);
       }
     }
   }
@@ -262,7 +287,7 @@ int main(int argc, char *argv[]) {
   vector<shared_ptr<State>> states { dfa->start_state() };
   // bypass start state, which is indexed 0 and created when dfa is constructed
   for (size_t i = 1; i < num_states; ++i) {
-    auto state = make_shared<State>();
+    auto state = make_shared<State>(i);
     states.push_back(state);
     dfa->add_state(state);
   }
@@ -284,16 +309,14 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  for (size_t i = 0; i < num_states; ++i) {
-    
-  }
+  std::ofstream dfa_out_stream(argv[3]);
+  dfa->output_as_csv(dfa_out_stream);
 
-  ifstream in("./assets/code/ui_code.txt");
-  string line;
-  while(getline(in, line)) {
-    scan(dfa, line);
-    puts("----------------------");
-  }
+  std::ifstream in_stream(argv[1]);
+  std::string input_content { std::istreambuf_iterator<char>(in_stream), std::istreambuf_iterator<char>() };
+
+  std::ofstream out_stream(argv[2]);
+  scan(dfa, input_content, out_stream);
 
   
   return 0;
