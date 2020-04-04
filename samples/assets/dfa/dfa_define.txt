@@ -4,6 +4,7 @@
 # finalize_states: idx_state token_id
 
 # keywords, bool literals, basic types, identifier
+
 1 ID
 2 ID
 3 ID
