@@ -288,7 +288,13 @@ int main(int argc, char *argv[]) {
     
   }
 
-  scan(dfa, "if (x==1) x = x + 1.5e-100;\n");
+  ifstream in("./assets/code/ui_code.txt");
+  string line;
+  while(getline(in, line)) {
+    scan(dfa, line);
+    puts("----------------------");
+  }
 
+  
   return 0;
 }
