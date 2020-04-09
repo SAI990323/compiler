@@ -67,9 +67,11 @@ namespace utils {
         return m_vertex_properties.size();
       }
 
-      std::unordered_set<vertex_property_pointer_t> vertices()
+      std::vector<vertex_property_pointer_t> vertices()
       {
-        std::unordered_set<vertex_property_pointer_t> vertices(m_vertex_properties.begin(), m_vertex_properties.end());
+        std::vector<vertex_property_pointer_t> vertices(
+            m_vertex_properties.begin(), 
+            m_vertex_properties.end());
         return vertices;
       }
 
