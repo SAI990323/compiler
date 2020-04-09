@@ -194,6 +194,15 @@ namespace utils {
         return edge_descriptions;
       }
 
+      std::vector<edge_description_t> edges()
+      {
+        std::vector<edge_description_t> edges;
+        for (auto& edge_property: m_edge_properties) {
+          edges.push_back(edge_description(edge_property).first);
+        }
+        return edges;
+      }
+
     private:
       std::unordered_set<vertex_property_pointer_t> m_vertex_properties;
       std::unordered_set<edge_property_pointer_t> m_edge_properties;
