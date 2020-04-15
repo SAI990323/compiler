@@ -1,0 +1,3 @@
+S  ::= "if" E "then" S S' | a ;
+S' ::= "else" S | epsilon ;
+E  ::= b ;

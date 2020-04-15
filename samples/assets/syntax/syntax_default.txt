@@ -1,0 +1,68 @@
+PROGRAM ::=
+    DEFINITION
+  | STATEMENT
+  ;
+
+STATEMENT ::=
+    STATEMENT STATEMENT
+  ;
+
+# definitions
+DEFINITION ::=
+    DEFINITION DEFINITION
+  | "proc" identifier ";" DEFINITION STATEMENT
+  | TYPE identifier ";"
+  ;
+TYPE ::=
+    basic_type SUBSCRIPT
+  | "record" DEFINITION
+  ;
+SUBSCRIPT ::=
+    "[" integer_literal "]" SUBSCRIPT
+  | epsilon
+  ;
+
+# assignment statements
+STATEMENT ::=
+    identifier "=" EXPRESSION ";"
+  | SUBSCRIPT_EXPRESSION "=" EXPRESSION ";"
+  ;
+EXPRESSION ::=
+    EXPRESSION "+" EXPRESSION
+  | EXPRESSION "*" EXPRESSION
+  | "-" EXPRESSION
+  | "(" EXPRESSION ")"
+  | identifier
+  | integer_literal
+  | floating_literal
+  | SUBSCRIPT_EXPRESSION
+  ;
+SUBSCRIPT_EXPRESSION ::=
+    identifier "[" EXPRESSION "]"
+  | SUBSCRIPT_EXPRESSION "[" EXPRESSION "]"
+  ;
+
+# control flow statements
+STATEMENT ::=
+    "if" BOOLEAN_EXPRESSION "then" STATEMENT
+  | "if" BOOLEAN_EXPRESSION "then" STATEMENT "else" STATEMEMTS
+  | "while" BOOLEAN_EXPRESSION "do" STATEMENT
+  ;
+BOOLEAN_EXPRESSION ::=
+    BOOLEAN_EXPRESSION "or" BOOLEAN_EXPRESSION
+  | BOOLEAN_EXPRESSION "and" BOOLEAN_EXPRESSION
+  | "not" BOOLEAN_EXPRESSION
+  | "(" BOOLEAN_EXPRESSION ")"
+  | EXPRESSION logical_comparasion EXPRESSION
+  | "true"
+  | "false"
+  ;
+
+# procedure calls
+STATEMENT ::=
+    "call" id "(" EXPRESSIONS ")"
+  ;
+EXPRESSIONS ::=
+    EXPRESSIONS "," EXPRESSION
+  | EXPRESSION
+  ;
