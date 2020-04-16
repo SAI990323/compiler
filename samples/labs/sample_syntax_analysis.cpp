@@ -107,5 +107,11 @@ label_terminate:
   }
   std::cout << "\n";
 
+  std::cout << (analyser ? "valid" : "not valid") << "\n";
+
+  // std::vector<compiler::symbol_t> symbols { 
+  //     { "id" }, { "\"+\"" }, { "id" }, { "\"*\"" }, { "id" } };
+  // analyser.analysis(symbols.begin(), symbols.end());
+
   return 0;
 }
