@@ -25,6 +25,8 @@ namespace compiler
     template <typename ForwardIterator>
     production_rule_t(const std::string& symbol_id,
         const ForwardIterator& it_begin, const ForwardIterator& it_end);
+
+    bool is_epsilon() const;
   };
 
 }
@@ -132,6 +134,11 @@ namespace compiler
     for (auto it = it_begin; it < it_end; ++it) {
       rule_symbols.emplace_back(*it);
     }
+  }
+
+  bool production_rule_t::is_epsilon() const
+  {
+    return rule_symbols.size() == 1 && rule_symbols[0] == epsilon_symbol();
   }
 
   std::ostream& operator<<(

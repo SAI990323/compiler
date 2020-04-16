@@ -2,6 +2,7 @@
 #define COMPILER_SYNTAX_ANALYSIS_HPP
 
 #include <iostream>
+#include <stack>
 #include <unordered_set>
 #include <unordered_map>
 
@@ -18,6 +19,7 @@ namespace compiler
       _build_first_set();
       _build_follow_set();
       _build_predict_table();
+      _check_validation();
     }
 
     auto get_first_set(symbol_t symbol)
@@ -97,7 +99,7 @@ namespace compiler
         flag_added = false;
         for (auto&& X: non_terminate_symbols()) {
           for (auto&& rule: rules(X)) {
-            if (rule.rule_symbols.size() == 1 && rule.rule_symbols[0] == epsilon) {
+            if (rule.is_epsilon()) {
               // X -> epsilon, add epsilon into FIRST[X]
               auto&& [_, inserted] = _first_set[X].insert(epsilon);
               flag_added |= inserted;
@@ -141,9 +143,7 @@ namespace compiler
         for (auto&& A: non_terminate_symbols()) {
           for (auto&& rule: rules(A)) {
             // A -> epsilon, bypass such condition
-            if (rule.rule_symbols.size() == 1 && rule.rule_symbols[0] == epsilon) {
-              continue;
-            }
+            if (rule.is_epsilon()) continue;
             auto& symbols = rule.rule_symbols;
             // A -> a B b (b may be epsilon)
             for (auto it_B = symbols.begin(), it_end = symbols.end(); 
@@ -202,10 +202,57 @@ namespace compiler
       }
     }
 
+    void _check_validation()
+    {
+      for (auto&& [_, items]: get_predict_table()) {
+        for (auto&& [_, rule_set]: items) {
+          if (rule_set.size() > 1) {
+            _is_valid = false;
+            break;
+          }
+        }
+        if (!_is_valid) break;
+      }
+    }
+
   public:
     explicit operator bool() const
     {
       return _is_valid;
+    }
+
+    template <typename ForwardIterator>
+    void analysis(
+        const ForwardIterator& it_begin, const ForwardIterator& it_end)
+    {
+      std::stack<symbol_t> symbols;
+      symbols.push(_start_symbol);
+
+      auto match_or_output = [&](symbol_t terminate_symbol) {
+        while (!symbols.empty()) {
+          auto top = symbols.top();
+          symbols.pop();
+          if (top == terminate_symbol) {
+            std::cout << "[matched] " << terminate_symbol << "\n";
+            break;
+          } else {
+            auto rule = *(_predict_table[top][terminate_symbol].begin());
+            std::cout << rule << "\n";
+            if (!rule.is_epsilon()) {
+              for (auto reverse_it = rule.rule_symbols.rbegin(); 
+                  reverse_it < rule.rule_symbols.rend(); ++reverse_it)
+              {
+                symbols.push(*reverse_it);
+              }
+            }
+          }
+        }
+      };
+
+      for (auto it = it_begin; it < it_end; ++it) {
+        match_or_output(*it);
+      }
+      match_or_output(delimiter_symbol());
     }
 
   private:
