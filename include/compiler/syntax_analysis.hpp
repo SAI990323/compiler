@@ -110,11 +110,7 @@ namespace compiler
                 // all symbols in FIRST[Y_i] into FIRST[X]
                 for (auto&& exist_symbol: _first_set[Yi]) {
                   auto&& [_, inserted] = _first_set[X].insert(exist_symbol);
-                  if (!inserted) {
-                    break;
-                  } else {
-                    flag_added = true;
-                  }
+                  flag_added |= inserted;
                 }
                 // FIRST[Y_i] doesn't contain epsilon
                 if (_first_set[Yi].count(epsilon) == 0) {
@@ -222,22 +218,23 @@ namespace compiler
     }
 
     template <typename ForwardIterator>
-    void analysis(
+    void analysis(std::ostream& out_stream,
         const ForwardIterator& it_begin, const ForwardIterator& it_end)
     {
       std::stack<symbol_t> symbols;
       symbols.push(_start_symbol);
 
       auto match_or_output = [&](symbol_t terminate_symbol) {
+        out_stream << "[matching] " << terminate_symbol << "\n";
         while (!symbols.empty()) {
           auto top = symbols.top();
           symbols.pop();
           if (top == terminate_symbol) {
-            std::cout << "[matched] " << terminate_symbol << "\n";
+            out_stream << "[matched] " << terminate_symbol << "\n";
             break;
           } else {
             auto rule = *(_predict_table[top][terminate_symbol].begin());
-            std::cout << rule << "\n";
+            out_stream << rule << "\n";
             if (!rule.is_epsilon()) {
               for (auto reverse_it = rule.rule_symbols.rbegin(); 
                   reverse_it < rule.rule_symbols.rend(); ++reverse_it)
