@@ -1,0 +1,359 @@
+PROGRAM ::= COMPONENT_LIST ;
+
+COMPONENT ::=
+    STMT
+  | STRUCT_DEFINITION
+  | FUNCTION_DEFINITION
+  ;
+
+COMPONENT_LIST ::=
+    COMPONENT COMPONENT_LIST_REMOVE_LEFT_RECURSION
+  ;
+COMPONENT_LIST_REMOVE_LEFT_RECURSION ::=
+    COMPONENT_LIST
+  | epsilon
+  ;
+
+#
+# statement
+#
+
+STMT ::=
+    DECLARATION
+  | EXPRESSION ";"
+  | STMT_SELECTION
+  | STMT_ITERATION
+  | STMT_JUMP
+  ;
+
+STMT_LIST ::= 
+    STMT STMT_LIST_EXTRACT_LEFT_FACTOR
+  ;
+STMT_LIST_EXTRACT_LEFT_FACTOR ::=
+    STMT_LIST
+  | epsilon
+  ;
+
+STMT_COMPOUND ::= "{" STMT_LIST "}" ;
+
+# selection statements
+STMT_SELECTION ::=
+    STMT_IF
+  | STMT_SWITCH
+  ;
+
+STMT_IF ::=
+    "if" "(" EXPRESSION ")" STMT_COMPOUND STMT_ELIF
+  ;
+STMT_ELIF ::=
+    "elif" "(" EXPRESSION ")" STMT_COMPOUND STMT_ELIF
+  | "else" STMT_COMPOUND
+  | epsilon
+  ;
+
+STMT_SWITCH ::=
+    "switch" "(" EXPRESSION ")" STMT_COMPOUND
+  ;
+
+# iteration statements
+STMT_ITERATION ::=
+    STMT_WHILE
+  | STMT_DO_WHILE
+  | STMT_FOR
+  ;
+
+STMT_WHILE ::=
+    "while" "(" EXPRESSION ")" STMT_COMPOUND
+  ;
+STMT_DO_WHILE ::=
+    "do" STMT_COMPOUND "while" "(" EXPRESSION ")" ";"
+  ;
+STMT_FOR ::=
+    "for" "(" 
+      EXPRESSION ";" 
+      EXPRESSION ";"
+      EXPRESSION
+    ")" STMT_COMPOUND
+  ;
+
+# jump statements
+STMT_JUMP ::=
+    "break" ";"
+  | "continue" ";"
+  | "return" EXPRESSION ";"
+  ;
+
+#
+# expression
+#
+
+EXPRESSION ::= EXPR_15 ;
+
+EXPRESSION_WITHOUT_COMMA ::=
+    EXPR_14
+  ;
+
+# expression with precedence 15
+EXPR_15 ::= 
+    EXPR_14 EXPR_15_REMOVE_LEFT_RECURSION 
+  ;
+EXPR_15_REMOVE_LEFT_RECURSION ::= 
+    EXPR_15_BINOCULAR_OPS_L2R EXPR_14 
+  | epsilon 
+  ;
+EXPR_15_BINOCULAR_OPS_L2R ::=
+    ","
+  ;
+
+# expression with precedence 14
+EXPR_14 ::= 
+    EXPR_13 EXPR_14_EXTRACT_LEFT_FACTOR 
+  ;
+EXPR_14_EXTRACT_LEFT_FACTOR ::=
+    EXPR_14_BINOCULAR_OPS_R2L EXPR_14
+  | epsilon
+  ;
+EXPR_14_BINOCULAR_OPS_R2L ::=
+    "="
+  | "+=" | "-="
+  | "*=" | "/=" | "%="
+  | "<<=" | ">>="
+  | "&=" | "^=" | "|="
+  ;
+
+# expression with precedence 13
+EXPR_13 ::= EXPR_12 ;
+
+# expression with precedence 12
+EXPR_12 ::= 
+    EXPR_11 EXPR_12_REMOVE_LEFT_RECURSION 
+  ;
+EXPR_12_REMOVE_LEFT_RECURSION ::= 
+    EXPR_12_BINOCULAR_OPS_L2R EXPR_11
+  | epsilon 
+  ;
+EXPR_12_BINOCULAR_OPS_L2R ::=
+    "||"
+  ;
+
+# expression with precedence 11
+EXPR_11 ::= 
+    EXPR_10 EXPR_11_REMOVE_LEFT_RECURSION 
+  ;
+EXPR_11_REMOVE_LEFT_RECURSION ::= 
+    EXPR_11_BINOCULAR_OPS_L2R EXPR_10
+  | epsilon 
+  ;
+EXPR_11_BINOCULAR_OPS_L2R ::=
+    "&&"
+  ;
+
+# expression with precedence 10
+EXPR_10 ::= 
+    EXPR_9 EXPR_10_REMOVE_LEFT_RECURSION 
+  ;
+EXPR_10_REMOVE_LEFT_RECURSION ::= 
+    EXPR_10_BINOCULAR_OPS_L2R EXPR_9
+  | epsilon 
+  ;
+EXPR_10_BINOCULAR_OPS_L2R ::=
+    "|"
+  ;
+
+# expression with precedence 9
+EXPR_9 ::= 
+    EXPR_8 EXPR_9_REMOVE_LEFT_RECURSION 
+  ;
+EXPR_9_REMOVE_LEFT_RECURSION ::= 
+    EXPR_9_BINOCULAR_OPS_L2R EXPR_8
+  | epsilon 
+  ;
+EXPR_9_BINOCULAR_OPS_L2R ::=
+    "^"
+  ;
+
+# expression with precedence 8
+EXPR_8 ::= 
+    EXPR_7 EXPR_8_REMOVE_LEFT_RECURSION 
+  ;
+EXPR_8_REMOVE_LEFT_RECURSION ::= 
+    EXPR_8_BINOCULAR_OPS_L2R EXPR_7
+  | epsilon 
+  ;
+EXPR_8_BINOCULAR_OPS_L2R ::=
+    "&"
+  ;
+
+# expression with precedence 7
+EXPR_7 ::= 
+    EXPR_6 EXPR_7_REMOVE_LEFT_RECURSION 
+  ;
+EXPR_7_REMOVE_LEFT_RECURSION ::= 
+    EXPR_7_BINOCULAR_OPS_L2R EXPR_6
+  | epsilon 
+  ;
+EXPR_7_BINOCULAR_OPS_L2R ::=
+    "==" | "!="
+  ;
+
+# expression with precedence 6
+EXPR_6 ::= 
+    EXPR_5 EXPR_6_REMOVE_LEFT_RECURSION 
+  ;
+EXPR_6_REMOVE_LEFT_RECURSION ::= 
+    EXPR_6_BINOCULAR_OPS_L2R EXPR_5
+  | epsilon 
+  ;
+EXPR_6_BINOCULAR_OPS_L2R ::=
+    "<" | "<="
+  | ">" | ">="
+  ;
+
+# expression with precedence 5
+EXPR_5 ::= 
+    EXPR_4 EXPR_5_REMOVE_LEFT_RECURSION 
+  ;
+EXPR_5_REMOVE_LEFT_RECURSION ::= 
+    EXPR_5_BINOCULAR_OPS_L2R EXPR_4
+  | epsilon 
+  ;
+EXPR_5_BINOCULAR_OPS_L2R ::=
+    "<<" | ">>"
+  ;
+
+# expression with precedence 4
+EXPR_4 ::= 
+    EXPR_3 EXPR_4_REMOVE_LEFT_RECURSION 
+  ;
+EXPR_4_REMOVE_LEFT_RECURSION ::= 
+    EXPR_4_BINOCULAR_OPS_L2R EXPR_3
+  | epsilon 
+  ;
+EXPR_4_BINOCULAR_OPS_L2R ::=
+    "+" | "-"
+  ;
+
+# expression with precedence 3
+EXPR_3 ::= 
+    EXPR_2 EXPR_3_REMOVE_LEFT_RECURSION 
+  ;
+EXPR_3_REMOVE_LEFT_RECURSION ::= 
+    EXPR_3_BINOCULAR_OPS_L2R EXPR_2
+  | epsilon 
+  ;
+EXPR_3_BINOCULAR_OPS_L2R ::=
+    "*" | "/" | "%"
+  ;
+
+# expression with precedence 2
+EXPR_2 ::=
+    "++" EXPR_1 | "--" EXPR_1
+  | "+"  EXPR_1 | "-" EXPR_1
+  | "!" EXPR_1 | "~" EXPR_1
+  | "*" EXPR_1
+  | "&" EXPR_1
+  | "sizeof" EXPR_1
+  | EXPR_1
+  ;
+
+# expression with precedence 1
+EXPR_1 ::=
+    PRIMARY_EXPRESSION EXPR_1_REMOVE_LEFT_RECURSION
+  | "(" EXPRESSION ")"
+  ;
+EXPR_1_REMOVE_LEFT_RECURSION ::=
+    EXPR_1_BINOCULAR_OPS_L2R PRIMARY_EXPRESSION
+  | EXPR_1_MONOCULAR_OPS_L2R
+  | "(" ARGUMENT_LIST ")"
+  | "[" EXPRESSION "]" EXPR_1_SUBSCRIPT_LIST
+  | epsilon
+  ;
+EXPR_1_BINOCULAR_OPS_L2R ::=
+    "."
+  | "->"
+  ;
+EXPR_1_MONOCULAR_OPS_L2R ::=
+    "++" | "--"
+  ;
+EXPR_1_SUBSCRIPT_LIST ::=
+    "[" EXPRESSION "]" EXPR_1_SUBSCRIPT_LIST
+  | epsilon
+  ;
+
+ARGUMENT_LIST ::= 
+    EXPRESSION_WITHOUT_COMMA ARGUMENT_LIST_REMOVE_LEFT_RECURSION
+  ;
+ARGUMENT_LIST_REMOVE_LEFT_RECURSION ::=
+    "," ARGUMENT_LIST
+  | epsilon
+  ;
+
+# primary expression
+PRIMARY_EXPRESSION ::= 
+    integer_constant 
+  | character_constant 
+  | floating_constant 
+  | string_literal 
+  | identifier
+  ;
+
+#
+# declarations
+#
+
+DECLARATION ::=
+    SPECIFIER DECLARATOR_LIST ";"
+  ;
+
+DECLARATION_LIST ::=
+    DECLARATION DECLARATION_LIST_REMOVE_LEFT_RECURSION
+  ;
+DECLARATION_LIST_REMOVE_LEFT_RECURSION =
+    DECLARATION_LIST
+  | epsilon
+  ;
+
+# 
+SPECIFIER ::=
+    "void"
+  | "int"
+  | "float"
+  | "bool"
+  | "struct" identifier
+  ;
+
+# declarators
+DECLARATOR ::=
+    identifier DECLARATOR_SUBSCRIPT_LIST
+  | "*" identifier DECLARATOR_SUBSCRIPT_LIST
+  ;
+DECLARATOR_SUBSCRIPT_LIST ::=
+    "[" EXPRESSION "]" DECLARATOR_SUBSCRIPT_LIST
+  | epsilon
+  ;
+
+DECLARATOR_LIST ::=
+    DECLARATOR DECLARATOR_LIST_REMOVE_LEFT_RECURSION
+  ;
+DECLARATOR_LIST_REMOVE_LEFT_RECURSION ::=
+    "," DECLARATOR_LIST
+  | epsilon
+  ;
+
+# struct
+STRUCT_DEFINITION ::=
+    "struct_def" identifier "{" DECLARATION_LIST "}" ";"
+  ;
+
+# functions
+FUNCTION_DEFINITION ::=
+    "function_def" identifier "(" PARAMETER_LIST ")" "->" SPECIFIER STMT_COMPOUND
+  ;
+
+PARAMETER_LIST ::=
+    SPECIFIER DECLARATOR PARAMETER_LIST_REMOVE_LEFT_RECURSION
+  ;
+PARAMETER_LIST_REMOVE_LEFT_RECURSION ::=
+    "," PARAMETER_LIST
+  | epsilon
+  ;

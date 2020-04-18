@@ -129,7 +129,11 @@ namespace compiler
 
   std::ostream& operator<<(std::ostream& out_stream, const symbol_t& symbol)
   {
-    return out_stream << symbol.symbol_id;
+    out_stream << symbol.symbol_id;
+    if (islower(symbol.symbol_id[0]) && symbol.content != "") {
+      out_stream << " " << symbol.content;
+    }
+    return out_stream;
   }
 
   symbol_t epsilon_symbol()

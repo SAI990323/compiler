@@ -1,0 +1,428 @@
+# num_states num_finalize_states
+146 133
+
+# finalize_states: idx_state token_id
+
+# keywords and identifier
+64 identifier
+65 identifier
+66 identifier
+67 "void"
+68 identifier
+69 "do"
+70 identifier
+71 identifier
+72 identifier
+73 identifier
+74 "while"
+75 identifier
+76 identifier
+77 identifier
+78 identifier
+79 identifier
+80 identifier
+81 identifier
+82 "continue"
+83 identifier
+84 identifier
+85 identifier
+86 identifier
+87 identifier
+88 identifier
+89 identifier
+90 identifier
+91 identifier
+92 identifier
+93 identifier
+94 "function_def"
+95 identifier
+96 identifier
+97 identifier
+98 "float"
+99 identifier
+100 "for"
+101 identifier
+102 identifier
+103 identifier
+104 identifier
+105 identifier
+106 "struct"
+107 identifier
+108 identifier
+109 identifier
+110 "struct_def"
+111 identifier
+112 identifier
+113 identifier
+114 identifier
+115 "sizeof"
+116 identifier
+117 identifier
+118 identifier
+119 identifier
+120 "switch"
+121 identifier
+122 identifier
+123 "int"
+124 "if"
+125 identifier
+126 identifier
+127 identifier
+128 "else"
+129 identifier
+130 "elif"
+131 identifier
+132 identifier
+133 identifier
+134 identifier
+135 "break"
+136 identifier
+137 identifier
+138 "bool"
+139 identifier
+140 identifier
+141 identifier
+142 identifier
+143 identifier
+144 identifier
+145 "return"
+
+# integer_constant and floating_constant
+1 integer_constant
+2 integer_constant
+6 integer_constant
+7 floating_constant
+8 floating_constant
+11 floating_constant
+
+# character_constant and string_literal
+14 character_constant
+16 string_literal
+
+# blank
+56 blank
+
+# comment and ['/', '/=']
+17 "/"
+22 "/="
+20 comment
+
+# operators
+23 "-"
+24 "-="
+25 "->"
+26 "--"
+27 "~"
+28 "+"
+29 "+="
+30 "++"
+31 "."
+32 "^"
+33 "^="
+34 "|"
+35 "|="
+36 "||"
+37 ">"
+38 ">="
+39 ">>"
+40 ">>="
+41 "<"
+42 "<<"
+43 "<<="
+44 "<="
+45 "&"
+46 "&&"
+47 "&="
+48 ";"
+49 ","
+50 "!"
+51 "="
+52 "*"
+53 "*="
+54 "="
+55 "=="
+58 "}"
+59 "{"
+60 "("
+61 ")"
+62 "["
+63 "]"
+
+# transitions: id_state_in id_state_out parameter
+
+# return
+0 140 r
+140 141 e
+140 139 [_a-df-zA-Z0-9]
+141 142 t
+141 139 [_a-su-zA-Z0-9]
+142 143 u
+142 139 [_a-tv-zA-Z0-9]
+143 144 r
+143 139 [_a-qs-zA-Z0-9]
+144 145 n
+144 139 [_a-mo-zA-Z0-9]
+145 139 [_a-zA-Z0-9]
+
+# void
+0 64 v
+64 65 o
+64 139 [_a-np-zA-Z0-9]
+65 66 i
+65 139 [_a-hj-zA-Z0-9]
+66 67 d
+66 139 [_abce-zA-Z0-9]
+67 139 [_a-zA-Z0-9]
+
+# do
+0 68 d
+68 69 o
+68 139 [_a-np-zA-Z0-9]
+69 139 [_a-zA-Z0-9]
+
+# while
+0 70 w
+70 71 h
+70 139 [_a-gi-zA-Z0-9]
+71 72 i
+71 139 [_a-hj-zA-Z0-9]
+72 73 l
+72 139 [_a-km-zA-Z0-9]
+73 74 e
+73 139 [_a-df-zA-Z0-9]
+74 139 [_a-zA-Z0-9]
+
+# continue
+0 75 c
+75 76 o
+75 139 [_a-np-zA-Z0-9]
+76 77 n
+76 139 [_a-mo-zA-Z0-9]
+77 78 t
+77 139 [_a-su-zA-Z0-9]
+78 79 i
+78 139 [_a-hj-zA-Z0-9]
+79 80 n
+79 139 [_a-mo-zA-Z0-9]
+80 81 u
+80 139 [_a-tv-zA-Z0-9]
+81 82 e
+81 139 [_a-df-zA-Z0-9]
+82 139 [_a-zA-Z0-9]
+
+# function_def & float & for
+0 83 f
+83 84 u
+83 139 [_a-kmnp-tv-zA-Z0-9]
+84 85 n
+84 139 [_a-mo-zA-Z0-9]
+85 86 c
+85 139 [_abd-zA-Z0-9]
+86 87 t
+86 139 [_a-su-zA-Z0-9]
+87 88 i
+87 139 [_a-hj-zA-Z0-9]
+88 89 o
+88 139 [_a-np-zA-Z0-9]
+89 90 n
+89 139 [_a-mo-zA-Z0-9]
+90 91 _
+90 139 [a-zA-Z0-9]
+91 92 d
+91 139 [_abce-zA-Z0-9]
+92 93 e
+92 139 [_a-df-zA-Z0-9]
+93 94 f
+93 139 [_a-eg-zA-Z0-9]
+94 139 [_a-zA-Z0-9]
+83 95 l
+95 96 o
+95 139 [_a-np-zA-Z0-9]
+96 97 a
+96 139 [_b-zA-Z0-9]
+97 98 t
+97 139 [_a-su-zA-Z0-9]
+98 139 [_a-zA-Z0-9]
+83 99 o
+99 100 r
+99 139 [_a-qs-zA-Z0-9]
+100 139 [_a-zA-Z0-9]
+
+# struct_def & sizeof & switch
+0 101 s
+101 102 t
+101 139 [_a-hj-suvxyzA-Z0-9]
+102 103 r
+102 139 [_a-qs-zA-Z0-9]
+103 104 u
+103 139 [_a-tv-zA-Z0-9]
+104 105 c
+104 105 [_abd-zA-Z0-9]
+105 106 t
+105 139 [_a-su-zA-Z0-9]
+106 107 _
+106 139 [a-zA-Z0-9]
+107 108 d
+107 108 [_abce-zA-Z0-9]
+108 109 e
+108 139 [_a-df-zA-Z0-9]
+109 110 f
+109 139 [_a-eg-zA-Z0-9]
+110 139 [_a-zA-Z0-9]
+101 111 i
+111 112 z
+111 139 [_a-yA-Z0-9]
+112 113 e
+112 139 [_a-df-zA-Z0-9]
+113 114 o
+113 139 [_a-np-zA-Z0-9]
+114 115 f
+114 139 [_a-eg-zA-Z0-9]
+115 139 [_a-zA-Z0-9]
+101 116 w
+116 117 i
+116 139 [_a-hj-zA-Z0-9]
+117 118 t
+117 139 [_a-su-zA-Z0-9]
+118 119 c
+118 139 [_abd-zA-Z0-9]
+119 120 h
+119 139 [_a-gi-zA-Z0-9]
+120 139 [_a-zA-Z0-9]
+
+# int & if
+0 121 i
+121 122 n
+121 139 [_a-eg-mo-zA-Z0-9]
+122 123 t
+122 139 [_a-su-zA-Z0-9]
+123 139 [_a-zA-Z0-9]
+121 124 f
+124 139 [_a-zA-Z0-9]
+
+# else & elif
+0 125 e
+125 126 l
+125 139 [_a-km-zA-Z0-9]
+126 127 s
+126 139 [_a-hj-rt-zA-Z0-9]
+127 128 e
+127 139 [_a-df-zA-Z0-9]
+128 139 [_a-zA-Z0-9]
+126 129 i
+129 130 f
+129 139 [_a-eg-zA-Z0-9]
+130 139 [_a-zA-Z0-9]
+
+# break & bool
+0 131 b
+131 132 r
+131 139 [_a-npqs-zA-Z0-9]
+132 133 e
+132 139 [_a-df-zA-Z0-9]
+133 134 a
+133 139 [_b-zA-Z0-9]
+134 135 k
+134 139 [_a-jl-zA-Z0-9]
+135 139 [_a-zA-Z0-9]
+131 136 o
+136 137 o
+136 139 [_a-np-zA-Z0-9]
+137 138 l
+137 139 [_a-km-zA-Z0-9]
+138 139 [_a-zA-Z0-9]
+
+# identifier
+0 139 [_aghj-qtuxyzA-Z] # bcdef i rs vw
+139 139 [_a-zA-Z0-9]
+
+# blank
+0 56 [\b\t\n]
+56 56 [\b\t\n]
+
+# comment & ['/', '/=']
+0 17 /
+17 18 *
+18 18 [^*]
+18 19 *
+19 18 [^/]
+19 20 /
+17 21 /
+21 21 [^\n]
+21 20 \n
+17 22 =
+
+# operators
+0 23 -
+23 24 =
+23 25 >
+23 26 -
+0 27 ~
+0 28 +
+28 29 =
+28 30 +
+0 31 \.
+0 32 ^
+32 33 =
+0 34 |
+34 35 =
+34 36 |
+0 37 >
+37 38 =
+37 39 >
+39 40 =
+0 41 <
+41 42 <
+42 43 =
+41 44 =
+0 45 &
+45 46 &
+45 47 =
+0 48 ;
+0 49 ,
+0 50 !
+50 51 =
+0 52 *
+52 53 =
+0 54 =
+54 55 =
+0 58 }
+0 59 {
+0 60 (
+0 61 )
+0 62 \[
+0 63 \]
+
+# string_literal & character_constant
+0 12 '
+12 13 [_0-9a-zA-Z]
+13 14 '
+0 15 "
+15 15 [_0-9a-zA-Z]
+15 16 "
+
+# integer_constant & floating_constant
+0 1 [1-9]
+0 2 0
+0 4 \.
+1 1 [0-9]
+1 9 [eE]
+1 8 \.
+2 2 [0-7]
+2 9 [eE]
+2 5 [xX]
+2 3 [89]
+3 3 [0-9]
+3 9 [eE]
+3 8 \.
+4 7 [0-9]
+5 6 [0-9a-fA-F]
+6 6 [0-9a-fA-F]
+7 7 [0-9]
+7 9 [eE]
+8 8 [0-9]
+8 9 [eE]
+9 10 [+-]
+9 11 [0-9]
+10 11 [0-9]
+11 11 [0-9]
