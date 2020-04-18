@@ -5,6 +5,7 @@
 #include <utils/io/smart_ifstream.hpp>
 #include <compiler/syntax.hpp>
 #include <compiler/syntax_analysis.hpp>
+#include <compiler/syntax_analysis_lr.hpp>
 
 int main(int argc, char* argv[])
 {

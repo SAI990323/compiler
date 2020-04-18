@@ -2,6 +2,7 @@
 .idea/
 .vscode/
 build/
+samples/build/
 samples/sample*
 samples/main*
 samples/output/

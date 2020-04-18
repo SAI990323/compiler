@@ -22,6 +22,8 @@ namespace compiler
     const symbol_t symbol;
     std::vector<symbol_t> rule_symbols;
 
+    production_rule_t();
+    
     template <typename ForwardIterator>
     production_rule_t(const std::string& symbol_id,
         const ForwardIterator& it_begin, const ForwardIterator& it_end);
@@ -38,6 +40,24 @@ struct std::hash<compiler::symbol_t>
       const compiler::symbol_t& symbol) const
   {
     return std::hash<std::string>()(symbol.symbol_id);
+  }
+};
+
+template <>
+struct std::hash<std::pair<int, std::string>>
+{
+  std::size_t operator()(const std::pair<int, std::string>& p) const
+  {
+    return std::hash<std::string>()(p.second + std::to_string(p.first));
+  }
+};
+
+template <>
+struct std::equal_to<std::pair<int, std::string>>
+{
+  bool operator()(const std::pair<int, std::string> &p, const std::pair<int, std::string> &q) const
+  {
+    return p.first == q.first && p.second == q.second;
   }
 };
 
