@@ -1,0 +1,71 @@
+// test for struct definition
+struct_def my_base_struct {
+  float value;
+};
+
+struct_def my_struct {
+  int a, b, c;
+  float e;
+  // test for struct declaration
+  struct my_base_struct base;
+};
+
+// test for function definition
+function_def printf(int value) -> void {
+  value++;
+}
+
+function_def main(int argc, void* argv[5])->int {
+  int a, b, c;
+
+  // test for nested-subscript
+  float d[100][200 + 5];
+
+  float e, f;
+  int an[105];
+
+  a += 100;
+  b >>= 0x2F;
+  c = 0123 && true ;
+  e = 1.5;
+  d[5][100] = 1.5e5;
+  f = 1.5e-2;
+  int x;
+  x = 100;
+
+  // test for if-elif-else and nested-if
+  if (x == 1) {
+    x = x + 1;
+  } elif (x < 1) {
+    if (++c < 1000) {
+      x = x - 1; 
+    }
+  } else {
+    x = x * 2;
+  }
+  int i, sum;
+  i = 1, sum = 0;
+
+  // test for while-loop
+  while (i <= 100) {
+    sum = sum + i;
+    a[i] = sum;
+    i = i + 1;
+  }
+
+  // test for do-while-loop
+  do {
+    i = i + 1;
+    if (i == 110) {
+      break;
+    }
+  } while (i > 100);
+
+  // test for for-loop
+  for (i = 0; i < 1000; i++) {
+    printf(i, "test");
+  }
+
+  /* ASDSA D */
+  return 0;
+}
