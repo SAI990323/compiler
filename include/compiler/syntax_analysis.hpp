@@ -326,7 +326,8 @@ public:
     match_or_output(delimiter_symbol());
     dot_stream << "}\n";
     dot_stream.close();
-    system("dot -Tpng output/output.dot -o output/output.png");
+    if(point < 100) 
+      system("dot -Tpng output/output.dot -o output/output.png");
   }
 
 private:
